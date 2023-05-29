@@ -1,0 +1,13 @@
+server:
+  ssl:
+    enabled: true
+    key-store: classpath:keystoreClient-client.jks
+    key-store-password: client
+    key-alias: keyParClient
+    key-password: client
+    key-store-type: pkcs12
+    client-auth: need
+    trust-store: classpath:truststoreClient-truststore.jks
+    trust-store-password: truststore
+    trust-store-type: pkcs12
+  port: 8480

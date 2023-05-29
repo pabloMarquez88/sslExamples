@@ -1,0 +1,8 @@
+server:
+  ssl:
+    key-store: classpath:keystoreServer-keystore.jks
+    key-store-password: keystore
+    key-alias: server
+    key-password: keystore
+    key-store-type: pkcs12
+  port: 8443
