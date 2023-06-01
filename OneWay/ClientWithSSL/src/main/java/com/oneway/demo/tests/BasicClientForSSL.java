@@ -8,7 +8,7 @@ import java.security.KeyStore;
 
 public class BasicClientForSSL {
 
-    static File trustStoreFile = new File("G:\\Desarrollo\\SSL\\ClientWithSSL\\src\\main\\resources\\TrustStoreClient.jks");
+    static File trustStoreFile = new File("src/main/resources/TrustStoreClient-truststore.jks");
 
     private static SSLSocketFactory createSslSocketFactory(KeyStore trustStore) throws Exception {
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -28,8 +28,6 @@ public class BasicClientForSSL {
         ks.load(fis, "truststore".toCharArray());
         ////
         SSLSocketFactory fac = createSslSocketFactory(ks);
-
-
         //the code
         URL url = new URL("https://localhost:8443/server-ssl/test");
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();

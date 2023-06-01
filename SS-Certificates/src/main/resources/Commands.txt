@@ -1,0 +1,47 @@
+C:\Program Files\Java\jdk-11.0.15\bin>keytool -genkey -alias server -keyalg RSA -keysize 2048 -keystore keystoreServer-keystore.jks
+Enter keystore password:
+Re-enter new password:
+What is your first and last name?
+  [Unknown]:  localhost
+What is the name of your organizational unit?
+  [Unknown]:  gti
+What is the name of your organization?
+  [Unknown]:  jp
+What is the name of your City or Locality?
+  [Unknown]:  caba
+What is the name of your State or Province?
+  [Unknown]:  bsas
+What is the two-letter country code for this unit?
+  [Unknown]:  ar
+Is CN=localhost, OU=gti, O=jp, L=caba, ST=bsas, C=ar correct?
+  [no]:  yes
+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
+
+
+  -------------------------------------------------------------------------------------------------------------------
+C:\Program Files\Java\jdk-11.0.15\bin>keytool -genkey -alias client -keyalg RSA -keysize 2048 -keystore keystoreClient.jks
+Enter keystore password:
+Re-enter new password:
+What is your first and last name?
+  [Unknown]:  Ezequiel
+What is the name of your organizational unit?
+  [Unknown]:  CIB
+What is the name of your organization?
+  [Unknown]:  VDI
+What is the name of your City or Locality?
+  [Unknown]:  Caba
+What is the name of your State or Province?
+  [Unknown]:  BsAS
+What is the two-letter country code for this unit?
+  [Unknown]:  AR
+Is CN=Ezequiel, OU=CIB, O=VDI, L=Caba, ST=BsAS, C=AR correct?
+  [no]:  yes
+
+-------------------------------------------------------------------------------------------------------------------
+If I want CSR
+keytool -certreq -alias server -file csr.csr -keystore keystore.jks
+-------------------------------------------------------------------------------------------------------------------
+Check keystore
+keytool -list -keystore /path/to/keystore -alias foo
+
+keytool -v -list -keystore /path/to/keystore

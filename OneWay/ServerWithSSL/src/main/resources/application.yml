@@ -1,7 +1,7 @@
 server:
   ssl:
-    #key-store: classpath:keystoreServer-keystore.jks
-    key-store: classpath:keystoreServerWrongDomain-keystore.jks
+    key-store: classpath:keystoreServer-keystore.jks
+    #key-store: classpath:keystoreServerWrongDomain-keystore.jks
     key-store-password: keystore
     key-alias: server
     key-password: keystore

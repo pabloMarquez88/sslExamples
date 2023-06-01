@@ -40,7 +40,7 @@ public class ClientInit {
 
     private final String endpoint = "/server-ssl/test";
 
-    @Bean
+   //@Bean
     public WebClient configureWebclient(@Value("${server.ssl.trust-store}") String trustStorePath,
                                         @Value("${server.ssl.trust-store-password}") String trustStorePass,
                                         @Value("${server.ssl.key-store}") String keyStorePath,
@@ -54,10 +54,13 @@ public class ClientInit {
             final KeyStore trustStore;
             final KeyStore keyStore;
 
+            //Load trustore
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(new FileInputStream(ResourceUtils.getFile(trustStorePath)), trustStorePass.toCharArray());
+            //Load Keystore
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(new FileInputStream(ResourceUtils.getFile(keyStorePath)), keyStorePass.toCharArray());
+            //Certificates based on truststore
             List<Certificate> certificateList =
                     Collections.list(trustStore.aliases()).stream()
                             .filter(
@@ -79,6 +82,7 @@ public class ClientInit {
                             .collect(Collectors.toList());
 
             certificates = certificateList.toArray(new X509Certificate[certificateList.size()]);
+            //Load private key
             privateKey = (PrivateKey) keyStore.getKey(keyAlias, keyStorePass.toCharArray());
             Certificate[] certChain = keyStore.getCertificateChain(keyAlias);
             X509Certificate[] x509CertificateChain =
@@ -89,16 +93,47 @@ public class ClientInit {
 
             X509Certificate certificate = x509CertificateChain[0];
             validateCertificate(certificate);
+            //Prepare SSL Context for call
             sslContext =
                     SslContextBuilder.forClient()
                             .keyManager(privateKey, keyStorePass, x509CertificateChain)
                             .trustManager(certificates)
                             .build();
 
+            //Httpclient used below in return method
             HttpClient httpClient =
                     HttpClient.create().secure(sslContextSpec -> sslContextSpec.sslContext(sslContext));
+            return webClientConfiguration(httpClient);
+
+        } catch (KeyStoreException
+                 | CertificateException
+                 | NoSuchAlgorithmException
+                 | IOException
+                 | UnrecoverableKeyException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Bean
+    public String configureWebclientAnother(@Value("${server.ssl.trust-store}") String trustStorePath,
+                                        @Value("${server.ssl.trust-store-password}") String trustStorePass,
+                                        @Value("${server.ssl.key-store}") String keyStorePath,
+                                        @Value("${server.ssl.key-store-password}") String keyStorePass,
+                                        @Value("${server.ssl.key-alias}") String keyAlias) throws Exception {
+
+        try {
+            final KeyStore trustStore;
+            final KeyStore keyStore;
+
+            //Load trustore
+            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(new FileInputStream(ResourceUtils.getFile(trustStorePath)), trustStorePass.toCharArray());
+            //Load Keystore
+            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(new FileInputStream(ResourceUtils.getFile(keyStorePath)), keyStorePass.toCharArray());
             /**
-             *
+             * ANOTHER WAY
              */
             // Load the Keystore
             //Load the Truststore
@@ -108,6 +143,7 @@ public class ClientInit {
             // Add Keystore to KeyManager
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, keyStorePass.toCharArray());
+
 
             // Create SSLContext with KeyManager and TrustManager
             SSLContext context = SSLContext.getInstance("TLS");
@@ -127,11 +163,7 @@ public class ClientInit {
             }
             System.out.println(content);
             in.close();
-
-            /**
-             *
-             */
-            return webClientConfiguration(httpClient);
+            return "Works";
 
         } catch (KeyStoreException
                  | CertificateException
@@ -140,7 +172,6 @@ public class ClientInit {
                  | UnrecoverableKeyException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private boolean validateCertificate(X509Certificate certificate) throws Exception {
